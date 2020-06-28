@@ -1,33 +1,25 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
-class ImageCard extends React.Component {
-  constructor(props) {
-    super(props);
+const ImageCard = props => {
+  const [spans, setSpans] = useState(0);
+  const imageRef = React.createRef();
+  const { description, urls } = props.image
 
-    this.state = { spans: 0 };
+  useEffect(() => {
+    imageRef.current.addEventListener('load', calcSpans);
+  });
 
-    this.imageRef = React.createRef();
+  const calcSpans = () => {
+    const spans = Math.ceil(imageRef.current.clientHeight / 10);
+
+    setSpans(spans);
   }
 
-  componentDidMount() {
-    this.imageRef.current.addEventListener('load', this.setSpans);
-  }
-
-  setSpans = () => {
-    const spans = Math.ceil(this.imageRef.current.clientHeight / 10);
-
-    this.setState({ spans: spans })
-  }
-
-  render() {
-    const { description, urls } = this.props.image
-
-    return (
-      <div style={{ gridRowEnd: `span ${this.state.spans}` }}>
-        <img ref={this.imageRef} alt={description} src={urls.regular} />
-      </div>
-    );
-  }
+  return (
+    <div style={{ gridRowEnd: `span ${spans}` }}>
+      <img ref={imageRef} alt={description} src={urls.regular} />
+    </div>
+  );
 }
 
 export default ImageCard;
